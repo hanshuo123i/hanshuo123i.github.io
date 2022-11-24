@@ -5,16 +5,12 @@
     <url>/2022/04/28/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
 <p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
 <p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
 <h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
 <p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
       <categories>
@@ -25,9 +21,60 @@
       </tags>
   </entry>
   <entry>
+    <title>【强化学习】经验回放技巧</title>
+    <url>/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[<h2 id="Prioritized-Experience-Replay（PER）"><a href="#Prioritized-Experience-Replay（PER）" class="headerlink" title="Prioritized Experience Replay（PER）"></a>Prioritized Experience Replay（PER）</h2><p>待更新……</p>
+<h2 id="Hindsight-Experience-Replay（HER）"><a href="#Hindsight-Experience-Replay（HER）" class="headerlink" title="Hindsight Experience Replay（HER）"></a>Hindsight Experience Replay（HER）</h2><h4 id="Sparse-Reward问题"><a href="#Sparse-Reward问题" class="headerlink" title="Sparse Reward问题"></a>Sparse Reward问题</h4><p>举例：Bit-Flipping游戏</p>
+<p>状态空间就是0,1组成的$N$位数据串，动作$i$就是将数据串中的第$i$位翻转，最终是希望通过若干次翻转，能够让这个数据串和这个target的数据串是一样的。</p>
+<p>reward：当前数据串和target一样时reward=0，不一样时reward=-1。</p>
+<p>当$N$大于40的时候，一些标准RL算法在这上面都会是失败的。关键问题在于，在如此多可能性中，尤其是在中间状态的时候，reward是一样的，彼此之间是没有区分的，不知道哪一个状态更靠近于目标状态，从而会进行一个盲目的搜寻，因为没有一个reward做很好的引导，在采样过程中几乎很难得到一个成功样例，也就没法学习。</p>
+<h4 id="解决思想"><a href="#解决思想" class="headerlink" title="解决思想"></a>解决思想</h4><p>举一个非常简单的例子，就比如说在这个sparse reward，机器人去踢球，发现在这个非常大的空间里，他很难踢进这个球框，所以他在反复的尝试中，都获得不了reward。具体来说，当对于智能体而言，他踢到任何一个不理想的状态，他都是等同视之的，觉得这是一个失败的经验，然后并不能从中推导出怎么去成功？而人类，他对失败经验的想法是，如果我想把球踢到A位置，但是我现在把球踢到B位置，那么虽然我失败了，我就会知道，如果球框在B位置的时候，我怎么去发力踢这个球。</p>
+<p>Hindsight又称事后诸葛亮，也就是说他要去指导这些Agent从一些失败的经验中去学习，这是它的核心思想。</p>
+<h4 id="具体算法"><a href="#具体算法" class="headerlink" title="具体算法"></a>具体算法</h4><p>类似于基于子目标的分层强化学习，我们给在原有MDP五元组上增加一个goal变量$g_t$，$g_t$描述了我们希望到达一个什么样的状态，但这并不代表该状态一定能够获得有效的reward。</p>
+<p>基本假设：</p>
+<ol>
+<li>$\forall g \in G, f_g: S \rightarrow\{0,1\}$，当前状态是否达到目标，达到为1，没达到为0</li>
+<li>$r_g(s, a)=-\left[f_g(s)==0\right]$，当前状态未达到目标，给一个-1奖励，达到给0，是一个二值奖励函数</li>
+<li>任意一个状态，能找到其对应的目标，状态与目标为一一映射的关系，最简单的是将$s_t$状态空间一一映射为$g_t$目标空间</li>
+</ol>
+<p>简言之就是：1）任意一个目标都对应一套稀疏的二值奖励函数；2）任意一个状态都有与之对应的目标。</p>
+<p>此时，经验池里存放的是带有目标的经验$\left(s_t\left|g, a_t, r_{g, t}, s_{t+1}\right| g\right)$，而非普通的$(s_t, a_t, r_{g, t}, s_{t+1})$，行为策略$\pi_b(s_t||g)$也变为以$s_t||g$作为输入。</p>
+<p>由于奖励的稀疏性，采集到的一条轨迹大概率地对于所需要最终完成的任务来说是失败的。所以最关键的一步就是在采样一条轨迹之后，对于轨迹上的每一个transition都去计算一下如果换作其他目标该transition会怎样。</p>
+<p>又因为系统的dynamics是不变的（这里没有底层策略，不会带来HRL中的non-stationary问题），因此$\left(s_t, a_t, s_{t+1}\right)$这一状态转移（在$s_t$状态下采取$a_t$转移到$s_{t+1}$的概率）是不变的，只需重新选择一下新目标$g’$，计算一下新奖励$r’=r(s_t, a_t, g’)$就可以了。</p>
+<p>那么如何得到新的目标$g’$呢？有四种方法：</p>
+<ol>
+<li>Final: 每次选择这一条轨迹的最后一个状态，作为新目标；这种情况下只选择一个新目标，加上原目标产生的transition，即经验池里面存放2倍于真实采样到的样本</li>
+<li>Future: 随机选这个轨迹上，当前transition之后的K个状态作为新目标，即如果现在的样本为$\left(s_t, a_t, s_{t+1}\right)$，那么会在$s_t, …, S_T$之间选择K个状态对应的目标作为新目标；这种情况下经验池里面存放的样本数目是真实采样到样本数目的K+1倍</li>
+<li>Episode: 每次选择轨迹上的K个状态作为新目标，这里是在这个整个轨迹上可以任意选取，即在$s_1, …, S_T$之间选择K个状态对应的目标作为新目标；这种情况下经验池里面存放的样本数目是真实采样到样本数目的K+1倍</li>
+<li>Random的话，其实是在每次所有出现过的状态中选择K个就可以了，这里其实都不要求在这个$s_1, …, S_T$里面进行采样</li>
+</ol>
+<p><img data-src="\img\HER.png" alt="HER伪代码" src="/img\HER.png"></p>
+<p>最后的实验可以看到，前两个方案效果比较好，其中第二个方案效果最好。实验中比较好的取值为K=8。</p>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
+<li><p><strong>HER可以结合任意的off-policy算法</strong>：文中使用了DDPG；</p>
+</li>
+<li><p><strong>效果好</strong>：由于这个任务需要机械臂把物体挪动到随机产生的不同位置，其本身就是一个多目标的任务，如果只设置一个稀疏的奖励，本身就很难学习到有效的东西。因此实验中DDPG+HER相比于纯DDPG的结果有了本质上的提升；（相比于其他count-based exploration策略也有很大的提升）</p>
+</li>
+<li><p><strong>对于单目标任务也适用</strong>：虽然这个方法自然地适用于多目标强化学习问题，但是如果对于单目标任务来说，在训练中只使用这个单一的目标也对于性能提升有帮助；不过文章还是推荐即使最后的任务是单目标，在训练的时候也使用多目标来训练；</p>
+</li>
+<li><p><strong>效果甚至好于一些reward shaping的尝试</strong>：文中简单尝试了几种手工的reward shaping，效果没有直接这样使用系数的目标更好。文章给出的解释是稀疏的奖励最能够反映任务目标，加了shaping之后其实是为了引导智能体学习从而牺牲了对于目标的正确表述；同时，shaping其实惩罚了先验规定的一些不想要的行动，这可能阻碍了智能体的探索。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+        <category>经验回放</category>
+      </categories>
+      <tags>
+        <tag>RL</tag>
+        <tag>Buffer</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>蜀葵花歌</title>
     <url>/2022/04/29/%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C/</url>
-    <content><![CDATA[<h2 id="蜀葵花歌"><a href="#蜀葵花歌" class="headerlink" title="蜀葵花歌"></a>蜀葵花歌</h2><p><font size=2><a href="https://so.gushiwen.cn/authorv_0969d1da1ac1.aspx">岑参</a> <a href="https://so.gushiwen.cn/shiwens/default.aspx?cstr=%E5%94%90%E4%BB%A3">〔唐代〕</a></font></p>
+    <content><![CDATA[<h2 id="蜀葵花歌"><a href="#蜀葵花歌" class="headerlink" title="蜀葵花歌"></a>蜀葵花歌</h2><font size="2">[岑参](https://so.gushiwen.cn/authorv_0969d1da1ac1.aspx) [〔唐代〕](https://so.gushiwen.cn/shiwens/default.aspx?cstr=唐代)</font>
+
 <p>昨日一花开，今日一花开。</p>
 <p>今日花正好，昨日花已老。</p>
 <p>始知人老不如花，可惜落花君莫扫。</p>

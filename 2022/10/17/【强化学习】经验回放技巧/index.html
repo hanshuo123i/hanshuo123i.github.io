@@ -21,28 +21,31 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="蜀葵花歌[岑参](https:&#x2F;&#x2F;so.gushiwen.cn&#x2F;authorv_0969d1da1ac1.aspx) [〔唐代〕](https:&#x2F;&#x2F;so.gushiwen.cn&#x2F;shiwens&#x2F;default.aspx?cstr&#x3D;唐代)  昨日一花开，今日一花开。 今日花正好，昨日花已老。 始知人老不如花，可惜落花君莫扫。 人生不得长少年，莫惜床头沽酒钱。 请君有钱向酒家，君不见，蜀葵花。">
+    <meta name="description" content="Prioritized Experience Replay（PER）待更新…… Hindsight Experience Replay（HER）Sparse Reward问题举例：Bit-Flipping游戏 状态空间就是0,1组成的$N$位数据串，动作$i$就是将数据串中的第$i$位翻转，最终是希望通过若干次翻转，能够让这个数据串和这个target的数据串是一样的。 reward：当前数据串和t">
 <meta property="og:type" content="article">
-<meta property="og:title" content="蜀葵花歌">
-<meta property="og:url" content="http://example.com/2022/04/29/%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C/index.html">
+<meta property="og:title" content="【强化学习】经验回放技巧">
+<meta property="og:url" content="http://example.com/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/index.html">
 <meta property="og:site_name" content="氨基酸i 的小站">
-<meta property="og:description" content="蜀葵花歌[岑参](https:&#x2F;&#x2F;so.gushiwen.cn&#x2F;authorv_0969d1da1ac1.aspx) [〔唐代〕](https:&#x2F;&#x2F;so.gushiwen.cn&#x2F;shiwens&#x2F;default.aspx?cstr&#x3D;唐代)  昨日一花开，今日一花开。 今日花正好，昨日花已老。 始知人老不如花，可惜落花君莫扫。 人生不得长少年，莫惜床头沽酒钱。 请君有钱向酒家，君不见，蜀葵花。">
+<meta property="og:description" content="Prioritized Experience Replay（PER）待更新…… Hindsight Experience Replay（HER）Sparse Reward问题举例：Bit-Flipping游戏 状态空间就是0,1组成的$N$位数据串，动作$i$就是将数据串中的第$i$位翻转，最终是希望通过若干次翻转，能够让这个数据串和这个target的数据串是一样的。 reward：当前数据串和t">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-29T09:08:41.000Z">
-<meta property="article:modified_time" content="2022-04-29T09:29:26.932Z">
+<meta property="og:image" content="http://example.com/img/HER.png">
+<meta property="article:published_time" content="2022-10-17T14:27:12.000Z">
+<meta property="article:modified_time" content="2022-11-24T05:46:38.998Z">
 <meta property="article:author" content="氨基酸i">
-<meta property="article:tag" content="古诗词">
+<meta property="article:tag" content="RL">
+<meta property="article:tag" content="Buffer">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/HER.png">
 
 
-<link rel="canonical" href="http://example.com/2022/04/29/%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C/">
+<link rel="canonical" href="http://example.com/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/04/29/%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C/","path":"2022/04/29/蜀葵花歌/","title":"蜀葵花歌"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/","path":"2022/10/17/【强化学习】经验回放技巧/","title":"【强化学习】经验回放技巧"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>蜀葵花歌 | 氨基酸i 的小站</title>
+<title>【强化学习】经验回放技巧 | 氨基酸i 的小站</title>
   
 
 
@@ -144,7 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C"><span class="nav-number">1.</span> <span class="nav-text">蜀葵花歌</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%91%E6%96%87%E5%8F%8A%E8%B5%8F%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">译文及赏析</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prioritized-Experience-Replay%EF%BC%88PER%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Prioritized Experience Replay（PER）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hindsight-Experience-Replay%EF%BC%88HER%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">Hindsight Experience Replay（HER）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Sparse-Reward%E9%97%AE%E9%A2%98"><span class="nav-number">2.0.1.</span> <span class="nav-text">Sparse Reward问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E6%83%B3"><span class="nav-number">2.0.2.</span> <span class="nav-text">解决思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E7%AE%97%E6%B3%95"><span class="nav-number">2.0.3.</span> <span class="nav-text">具体算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">2.0.4.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -211,7 +214,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/29/%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.png">
@@ -224,12 +227,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="蜀葵花歌 | 氨基酸i 的小站">
+      <meta itemprop="name" content="【强化学习】经验回放技巧 | 氨基酸i 的小站">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          蜀葵花歌
+          【强化学习】经验回放技巧
         </h1>
 
         <div class="post-meta-container">
@@ -239,9 +242,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-29 17:08:41 / 修改时间：17:29:26" itemprop="dateCreated datePublished" datetime="2022-04-29T17:08:41+08:00">2022-04-29</time>
+      <time title="创建时间：2022-10-17 22:27:12" itemprop="dateCreated datePublished" datetime="2022-10-17T22:27:12+08:00">2022-10-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-24 13:46:38" itemprop="dateModified" datetime="2022-11-24T13:46:38+08:00">2022-11-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -249,7 +258,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%8F%A4%E8%AF%97%E8%AF%8D/" itemprop="url" rel="index"><span itemprop="name">古诗词</span></a>
+          <a href="/categories/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">强化学习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE/" itemprop="url" rel="index"><span itemprop="name">经验回放</span></a>
         </span>
     </span>
 
@@ -270,14 +283,44 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="蜀葵花歌"><a href="#蜀葵花歌" class="headerlink" title="蜀葵花歌"></a>蜀葵花歌</h2><font size="2">[岑参](https://so.gushiwen.cn/authorv_0969d1da1ac1.aspx) [〔唐代〕](https://so.gushiwen.cn/shiwens/default.aspx?cstr=唐代)</font>
+        <h2 id="Prioritized-Experience-Replay（PER）"><a href="#Prioritized-Experience-Replay（PER）" class="headerlink" title="Prioritized Experience Replay（PER）"></a>Prioritized Experience Replay（PER）</h2><p>待更新……</p>
+<h2 id="Hindsight-Experience-Replay（HER）"><a href="#Hindsight-Experience-Replay（HER）" class="headerlink" title="Hindsight Experience Replay（HER）"></a>Hindsight Experience Replay（HER）</h2><h4 id="Sparse-Reward问题"><a href="#Sparse-Reward问题" class="headerlink" title="Sparse Reward问题"></a>Sparse Reward问题</h4><p>举例：Bit-Flipping游戏</p>
+<p>状态空间就是0,1组成的$N$位数据串，动作$i$就是将数据串中的第$i$位翻转，最终是希望通过若干次翻转，能够让这个数据串和这个target的数据串是一样的。</p>
+<p>reward：当前数据串和target一样时reward=0，不一样时reward=-1。</p>
+<p>当$N$大于40的时候，一些标准RL算法在这上面都会是失败的。关键问题在于，在如此多可能性中，尤其是在中间状态的时候，reward是一样的，彼此之间是没有区分的，不知道哪一个状态更靠近于目标状态，从而会进行一个盲目的搜寻，因为没有一个reward做很好的引导，在采样过程中几乎很难得到一个成功样例，也就没法学习。</p>
+<h4 id="解决思想"><a href="#解决思想" class="headerlink" title="解决思想"></a>解决思想</h4><p>举一个非常简单的例子，就比如说在这个sparse reward，机器人去踢球，发现在这个非常大的空间里，他很难踢进这个球框，所以他在反复的尝试中，都获得不了reward。具体来说，当对于智能体而言，他踢到任何一个不理想的状态，他都是等同视之的，觉得这是一个失败的经验，然后并不能从中推导出怎么去成功？而人类，他对失败经验的想法是，如果我想把球踢到A位置，但是我现在把球踢到B位置，那么虽然我失败了，我就会知道，如果球框在B位置的时候，我怎么去发力踢这个球。</p>
+<p>Hindsight又称事后诸葛亮，也就是说他要去指导这些Agent从一些失败的经验中去学习，这是它的核心思想。</p>
+<h4 id="具体算法"><a href="#具体算法" class="headerlink" title="具体算法"></a>具体算法</h4><p>类似于基于子目标的分层强化学习，我们给在原有MDP五元组上增加一个goal变量$g_t$，$g_t$描述了我们希望到达一个什么样的状态，但这并不代表该状态一定能够获得有效的reward。</p>
+<p>基本假设：</p>
+<ol>
+<li>$\forall g \in G, f_g: S \rightarrow\{0,1\}$，当前状态是否达到目标，达到为1，没达到为0</li>
+<li>$r_g(s, a)=-\left[f_g(s)==0\right]$，当前状态未达到目标，给一个-1奖励，达到给0，是一个二值奖励函数</li>
+<li>任意一个状态，能找到其对应的目标，状态与目标为一一映射的关系，最简单的是将$s_t$状态空间一一映射为$g_t$目标空间</li>
+</ol>
+<p>简言之就是：1）任意一个目标都对应一套稀疏的二值奖励函数；2）任意一个状态都有与之对应的目标。</p>
+<p>此时，经验池里存放的是带有目标的经验$\left(s_t\left|g, a_t, r_{g, t}, s_{t+1}\right| g\right)$，而非普通的$(s_t, a_t, r_{g, t}, s_{t+1})$，行为策略$\pi_b(s_t||g)$也变为以$s_t||g$作为输入。</p>
+<p>由于奖励的稀疏性，采集到的一条轨迹大概率地对于所需要最终完成的任务来说是失败的。所以最关键的一步就是在采样一条轨迹之后，对于轨迹上的每一个transition都去计算一下如果换作其他目标该transition会怎样。</p>
+<p>又因为系统的dynamics是不变的（这里没有底层策略，不会带来HRL中的non-stationary问题），因此$\left(s_t, a_t, s_{t+1}\right)$这一状态转移（在$s_t$状态下采取$a_t$转移到$s_{t+1}$的概率）是不变的，只需重新选择一下新目标$g’$，计算一下新奖励$r’=r(s_t, a_t, g’)$就可以了。</p>
+<p>那么如何得到新的目标$g’$呢？有四种方法：</p>
+<ol>
+<li>Final: 每次选择这一条轨迹的最后一个状态，作为新目标；这种情况下只选择一个新目标，加上原目标产生的transition，即经验池里面存放2倍于真实采样到的样本</li>
+<li>Future: 随机选这个轨迹上，当前transition之后的K个状态作为新目标，即如果现在的样本为$\left(s_t, a_t, s_{t+1}\right)$，那么会在$s_t, …, S_T$之间选择K个状态对应的目标作为新目标；这种情况下经验池里面存放的样本数目是真实采样到样本数目的K+1倍</li>
+<li>Episode: 每次选择轨迹上的K个状态作为新目标，这里是在这个整个轨迹上可以任意选取，即在$s_1, …, S_T$之间选择K个状态对应的目标作为新目标；这种情况下经验池里面存放的样本数目是真实采样到样本数目的K+1倍</li>
+<li>Random的话，其实是在每次所有出现过的状态中选择K个就可以了，这里其实都不要求在这个$s_1, …, S_T$里面进行采样</li>
+</ol>
+<p><img data-src="\img\HER.png" alt="HER伪代码" src="/img\HER.png"></p>
+<p>最后的实验可以看到，前两个方案效果比较好，其中第二个方案效果最好。实验中比较好的取值为K=8。</p>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
+<li><p><strong>HER可以结合任意的off-policy算法</strong>：文中使用了DDPG；</p>
+</li>
+<li><p><strong>效果好</strong>：由于这个任务需要机械臂把物体挪动到随机产生的不同位置，其本身就是一个多目标的任务，如果只设置一个稀疏的奖励，本身就很难学习到有效的东西。因此实验中DDPG+HER相比于纯DDPG的结果有了本质上的提升；（相比于其他count-based exploration策略也有很大的提升）</p>
+</li>
+<li><p><strong>对于单目标任务也适用</strong>：虽然这个方法自然地适用于多目标强化学习问题，但是如果对于单目标任务来说，在训练中只使用这个单一的目标也对于性能提升有帮助；不过文章还是推荐即使最后的任务是单目标，在训练的时候也使用多目标来训练；</p>
+</li>
+<li><p><strong>效果甚至好于一些reward shaping的尝试</strong>：文中简单尝试了几种手工的reward shaping，效果没有直接这样使用系数的目标更好。文章给出的解释是稀疏的奖励最能够反映任务目标，加了shaping之后其实是为了引导智能体学习从而牺牲了对于目标的正确表述；同时，shaping其实惩罚了先验规定的一些不想要的行动，这可能阻碍了智能体的探索。</p>
+</li>
+</ul>
 
-<p>昨日一花开，今日一花开。</p>
-<p>今日花正好，昨日花已老。</p>
-<p>始知人老不如花，可惜落花君莫扫。</p>
-<p>人生不得长少年，莫惜床头沽酒钱。</p>
-<p>请君有钱向酒家，君不见，蜀葵花。</p>
-<h3 id="译文及赏析"><a href="#译文及赏析" class="headerlink" title="译文及赏析"></a><a target="_blank" rel="noopener" href="https://so.gushiwen.cn/shiwenv_df9a3279fc6b.aspx">译文及赏析</a></h3>
     </div>
 
     
@@ -286,21 +329,19 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%8F%A4%E8%AF%97%E8%AF%8D/" rel="tag"># 古诗词</a>
+              <a href="/tags/RL/" rel="tag"># RL</a>
+              <a href="/tags/Buffer/" rel="tag"># Buffer</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/04/28/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2022/04/29/%E8%9C%80%E8%91%B5%E8%8A%B1%E6%AD%8C/" rel="prev" title="蜀葵花歌">
+                  <i class="fa fa-chevron-left"></i> 蜀葵花歌
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/" rel="next" title="【强化学习】经验回放技巧">
-                  【强化学习】经验回放技巧 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
