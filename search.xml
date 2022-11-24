@@ -24,13 +24,13 @@
     <title>【强化学习】经验回放技巧</title>
     <url>/2022/10/17/%E3%80%90%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E3%80%91%E7%BB%8F%E9%AA%8C%E5%9B%9E%E6%94%BE%E6%8A%80%E5%B7%A7/</url>
     <content><![CDATA[<h2 id="Prioritized-Experience-Replay（PER）"><a href="#Prioritized-Experience-Replay（PER）" class="headerlink" title="Prioritized Experience Replay（PER）"></a>Prioritized Experience Replay（PER）</h2><p>待更新……</p>
-<h2 id="Hindsight-Experience-Replay（HER）"><a href="#Hindsight-Experience-Replay（HER）" class="headerlink" title="Hindsight Experience Replay（HER）"></a>Hindsight Experience Replay（HER）</h2><h4 id="Sparse-Reward问题"><a href="#Sparse-Reward问题" class="headerlink" title="Sparse Reward问题"></a>Sparse Reward问题</h4><p>举例：Bit-Flipping游戏</p>
+<h2 id="Hindsight-Experience-Replay（HER）"><a href="#Hindsight-Experience-Replay（HER）" class="headerlink" title="Hindsight Experience Replay（HER）"></a>Hindsight Experience Replay（HER）</h2><h3 id="Sparse-Reward问题"><a href="#Sparse-Reward问题" class="headerlink" title="Sparse Reward问题"></a>Sparse Reward问题</h3><p>举例：Bit-Flipping游戏</p>
 <p>状态空间就是0,1组成的$N$位数据串，动作$i$就是将数据串中的第$i$位翻转，最终是希望通过若干次翻转，能够让这个数据串和这个target的数据串是一样的。</p>
 <p>reward：当前数据串和target一样时reward=0，不一样时reward=-1。</p>
 <p>当$N$大于40的时候，一些标准RL算法在这上面都会是失败的。关键问题在于，在如此多可能性中，尤其是在中间状态的时候，reward是一样的，彼此之间是没有区分的，不知道哪一个状态更靠近于目标状态，从而会进行一个盲目的搜寻，因为没有一个reward做很好的引导，在采样过程中几乎很难得到一个成功样例，也就没法学习。</p>
-<h4 id="解决思想"><a href="#解决思想" class="headerlink" title="解决思想"></a>解决思想</h4><p>举一个非常简单的例子，就比如说在这个sparse reward，机器人去踢球，发现在这个非常大的空间里，他很难踢进这个球框，所以他在反复的尝试中，都获得不了reward。具体来说，当对于智能体而言，他踢到任何一个不理想的状态，他都是等同视之的，觉得这是一个失败的经验，然后并不能从中推导出怎么去成功？而人类，他对失败经验的想法是，如果我想把球踢到A位置，但是我现在把球踢到B位置，那么虽然我失败了，我就会知道，如果球框在B位置的时候，我怎么去发力踢这个球。</p>
+<h3 id="解决思想"><a href="#解决思想" class="headerlink" title="解决思想"></a>解决思想</h3><p>举一个非常简单的例子，就比如说在这个sparse reward，机器人去踢球，发现在这个非常大的空间里，他很难踢进这个球框，所以他在反复的尝试中，都获得不了reward。具体来说，当对于智能体而言，他踢到任何一个不理想的状态，他都是等同视之的，觉得这是一个失败的经验，然后并不能从中推导出怎么去成功？而人类，他对失败经验的想法是，如果我想把球踢到A位置，但是我现在把球踢到B位置，那么虽然我失败了，我就会知道，如果球框在B位置的时候，我怎么去发力踢这个球。</p>
 <p>Hindsight又称事后诸葛亮，也就是说他要去指导这些Agent从一些失败的经验中去学习，这是它的核心思想。</p>
-<h4 id="具体算法"><a href="#具体算法" class="headerlink" title="具体算法"></a>具体算法</h4><p>类似于基于子目标的分层强化学习，我们给在原有MDP五元组上增加一个goal变量$g_t$，$g_t$描述了我们希望到达一个什么样的状态，但这并不代表该状态一定能够获得有效的reward。</p>
+<h3 id="具体算法"><a href="#具体算法" class="headerlink" title="具体算法"></a>具体算法</h3><p>类似于基于子目标的分层强化学习，我们给在原有MDP五元组上增加一个goal变量$g_t$，$g_t$描述了我们希望到达一个什么样的状态，但这并不代表该状态一定能够获得有效的reward。</p>
 <p>基本假设：</p>
 <ol>
 <li>$\forall g \in G, f_g: S \rightarrow\{0,1\}$，当前状态是否达到目标，达到为1，没达到为0</li>
@@ -50,7 +50,7 @@
 </ol>
 <p><img data-src="\img\HER.png" alt="HER伪代码" src="/img\HER.png"></p>
 <p>最后的实验可以看到，前两个方案效果比较好，其中第二个方案效果最好。实验中比较好的取值为K=8。</p>
-<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><ul>
 <li><p><strong>HER可以结合任意的off-policy算法</strong>：文中使用了DDPG；</p>
 </li>
 <li><p><strong>效果好</strong>：由于这个任务需要机械臂把物体挪动到随机产生的不同位置，其本身就是一个多目标的任务，如果只设置一个稀疏的奖励，本身就很难学习到有效的东西。因此实验中DDPG+HER相比于纯DDPG的结果有了本质上的提升；（相比于其他count-based exploration策略也有很大的提升）</p>
